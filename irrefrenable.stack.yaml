@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: irrefrenable
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: irrefrenable
+  name: azul
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: azul
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: azul
+    spec:
+      containers:
+      - image: kodekloud/webapp-color
+        imagePullPolicy: Always
+        name: azul
+        args:
+        - "--color"
+        - "darkblue"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: irrefrenable
+  name: servicio-azul
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: azul
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: irrefrenable
+  name: ingreso-azul
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/group.name: impetuosa
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:609465708365:certificate/bc289640-ed76-4037-bc9c-68cd7db2be4b
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}, {"HTTP": 80}]'
+    alb.ingress.kubernetes.io/actions.tls-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+
+spec:
+  rules:
+    - host: azul.irrefrenable.tk
+      http:
+        paths:
+          - path: /*
+            backend:
+              serviceName: tls-redirect
+              servicePort: use-annotation
+          - path: /*
+            backend:
+              serviceName: servicio-azul
+              servicePort: 80
