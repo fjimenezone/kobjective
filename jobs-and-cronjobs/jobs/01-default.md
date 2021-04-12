@@ -2,7 +2,7 @@
 
 Run
 
-`kubectl create -f italian-job.yaml`
+```kubectl create -f italian-job.yaml```
 
 The watch pane shows a job.batch/italian resource. This job would have created a pod.
 
@@ -17,12 +17,20 @@ job.batch/italian   1/1           3s         12s
 
 Observe
 
-`kubectl describe job italian`
+```kubectl describe job italian```
+
+Lines of interest:
+- Parallelism
+- Completions
+- Start Time
+- Completed At
+- Duration
+- Pods Statuses
+- Events
 
 Check the output of the pod
 
-`kubectl logs italian-xxxxx`
-
+```kubectl logs italian-pgtjr```
 
 The `STATUS` of the pod is `Completed`
 
@@ -31,5 +39,8 @@ The `STATUS` of the pod is `Completed`
 
 Clear the job
 
-`kubectl delete -f italian-job.yaml`
+```kubectl delete -f italian-job.yaml```
+
+Documentation
+https://kubernetes.io/docs/concepts/workloads/controllers/job/
 
