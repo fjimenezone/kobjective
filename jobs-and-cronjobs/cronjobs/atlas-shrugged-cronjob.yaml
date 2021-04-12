@@ -1,0 +1,30 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: atlas-shrugged
+  labels:
+    cronjob: atlas-shrugged
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 20
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 4
+  jobTemplate:
+    metadata:
+      labels:
+        cronjob: atlas-shrugged
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            cronjob: atlas-shrugged
+        spec:
+          containers:
+          - name:  atlas-shrugged
+            image: busybox
+            command:
+            - "sleep"
+            - "10"
+          restartPolicy: Never

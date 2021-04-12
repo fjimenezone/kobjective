@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: forrest-gump
+spec:
+  completions: 2
+  parallelism: 1
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["/bin/sh", "-c"]
+        args: ["echo Run Forrest, Run! && sleep 10"]
+      restartPolicy: Never
